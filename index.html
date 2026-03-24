@@ -3,23 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Water Drop Game</title>
+    <title>Catch Clean Water</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="game-wrapper">
-        <h1 class="game-title">Water Drop</h1>
-        <p class="game-tagline">Catch the good drops, avoid the bad ones!</p>
-        <div class="score-panel">
-            <div class="score">Score: <span id="score">0</span></div>
-            <div class="timer">Time: <span id="time">30</span>s</div>
-            <button id="start-btn">Start Game</button>
-        </div>
-        
-        <div id="game-container">
-        </div>
-    </div>
-    
+    <main class="game-shell">
+        <img class="company-logo" src="img/cw_logo.png" alt="charity: water logo">
+        <h1>Catch Clean Water</h1>
+        <p class="subtitle">Move the water can to catch clean drops and avoid contaminated drops.</p>
+
+        <section id="startScreen" class="screen start-screen active">
+            <button id="startButton" class="action-button">Start Game</button>
+            <button id="howToPlayButton" class="action-button secondary-button" type="button">How To Play</button>
+            <div id="howToPlayPanel" class="howto-panel">
+                <p>1. Use Arrow Left and Arrow Right to move the water can.</p>
+                <p>2. Catch blue drops to gain +10 score and fill water.</p>
+                <p>3. Avoid brown drops. Catching one costs 1 life and -10 score.</p>
+                <p>4. Gold super drops are rare power-ups: they give +1 life.</p>
+                <p>5. Fill to 100% to advance levels. Beat all 10 levels to win.</p>
+            </div>
+            <p class="help-text">You start with 3 lives. Blue gives +10, gold gives +1 life, brown is harmful.</p>
+        </section>
+
+        <section id="gameScreen" class="screen">
+            <div class="hud">
+                <div class="hud-item">Level: <span id="levelValue">1</span></div>
+                <div class="hud-item">Score: <span id="scoreValue">0</span></div>
+                <div class="hud-item">Lives: <span id="livesValue">3</span></div>
+                <div class="hud-item">Fill: <span id="fillValue">0</span>%</div>
+            </div>
+
+            <div class="progress-wrap" aria-label="Water fill progress">
+                <div id="fillBar" class="progress-bar"></div>
+            </div>
+
+            <div class="controls-row">
+                <button id="pauseButton" class="action-button secondary-button" type="button">Pause</button>
+                <button id="menuButton" class="action-button secondary-button" type="button">Return To Main Menu</button>
+            </div>
+
+            <div id="gameArea" class="game-area" aria-label="Game area">
+                <div id="pauseOverlay" class="pause-overlay">Paused</div>
+                <img id="waterCan" class="water-can" src="img/water-can-transparent.png" alt="Water can">
+            </div>
+
+            <p class="help-text">Use Left/Right arrow keys to move the can. Blue: +10, Gold: +1 life, Brown: -10 and -1 life.</p>
+        </section>
+
+        <section id="endScreen" class="screen end-screen">
+            <h2 id="endTitle">Game Over</h2>
+            <p>Final Score: <strong id="finalScore">0</strong></p>
+            <button id="playAgainButton" class="action-button">Play Again</button>
+            <button id="endMenuButton" class="action-button secondary-button" type="button">Return To Main Menu</button>
+        </section>
+
+        <div id="celebrationLayer" class="celebration-layer" aria-hidden="true"></div>
+    </main>
+
     <script src="script.js"></script>
 </body>
 </html>
