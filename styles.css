@@ -1,6 +1,8 @@
 :root {
     --sky: #9dd7ff;
     --water: #3ba4f5;
+    --water-deep: #1768ac;
+    --sun: #ffc907;
     --panel: #ffffff;
     --text: #073b5f;
     --clean: #1f8fe8;
@@ -15,17 +17,21 @@ body {
     margin: 0;
     min-height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    font-family: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
     background: linear-gradient(180deg, #c8ebff 0%, #8dd0ff 50%, #5eb4ef 100%);
     color: var(--text);
-    padding: clamp(10px, 2.5vw, 18px);
+    padding: clamp(10px, 2.5vw, 18px) clamp(10px, 3vw, 24px) clamp(18px, 4vw, 30px);
+}
+
+.page-shell {
+    width: min(96vw, 900px);
 }
 
 .game-shell {
     position: relative;
-    width: min(96vw, 760px);
+    width: 100%;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 16px;
     border: 2px solid #7abfef;
@@ -44,6 +50,8 @@ body {
 h1 {
     margin: 0 0 8px;
     text-align: center;
+    font-weight: 800;
+    letter-spacing: 0.01em;
 }
 
 .subtitle {
@@ -64,6 +72,36 @@ h1 {
 .end-screen {
     text-align: center;
     padding: 20px 8px 8px;
+}
+
+.difficulty-panel {
+    max-width: 580px;
+    margin: 0 auto 16px;
+    padding: 12px;
+    background: #f6fbff;
+    border: 1px solid #a7d3f2;
+    border-radius: 12px;
+}
+
+.difficulty-title {
+    margin: 0 0 10px;
+    font-size: 0.96rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.difficulty-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.difficulty-description {
+    margin: 10px 0 0;
+    font-size: 0.9rem;
+    color: #195a87;
 }
 
 .action-button {
@@ -118,9 +156,19 @@ h1 {
     background: #238bdb;
 }
 
+.difficulty-button {
+    min-width: 106px;
+    background: #72bdf0;
+}
+
+.difficulty-button.active {
+    background: var(--water-deep);
+    box-shadow: 0 0 0 2px rgba(23, 104, 172, 0.22);
+}
+
 .hud {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
     margin-bottom: 12px;
     font-weight: 700;
@@ -146,9 +194,50 @@ h1 {
 
 .progress-bar {
     height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #19c15d, #12a54d);
+    width: 0;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0) 45%),
+        linear-gradient(90deg, #7fd7ff 0%, #45b3f4 50%, #1f8fe8 100%);
     transition: width 0.2s ease;
+}
+
+.objectives-panel {
+    margin-bottom: 12px;
+    padding: 10px;
+    background: #f8fcff;
+    border: 1px solid #a7d3f2;
+    border-radius: 10px;
+}
+
+.objectives-panel h2 {
+    margin: 0 0 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.objectives-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.objectives-list li {
+    font-size: 0.86rem;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #ddefff;
+    border: 1px solid #9bcff2;
+}
+
+.objectives-list li.completed {
+    background: #dff8e5;
+    border-color: #8fd4a0;
 }
 
 .controls-row {
@@ -167,6 +256,40 @@ h1 {
     border: 2px solid #77b9e6;
     background: linear-gradient(180deg, #bde8ff 0%, #79c8f8 100%);
     overflow: hidden;
+}
+
+.in-game-hud {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    gap: 14px;
+    width: calc(100% - 16px);
+    justify-content: center;
+    pointer-events: none;
+}
+
+.in-game-hud-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #ffffff;
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-shadow:
+        -1px -1px 0 rgba(6, 39, 63, 0.95),
+        1px -1px 0 rgba(6, 39, 63, 0.95),
+        -1px 1px 0 rgba(6, 39, 63, 0.95),
+        1px 1px 0 rgba(6, 39, 63, 0.95),
+        0 2px 5px rgba(6, 39, 63, 0.8);
+}
+
+.in-game-hud-item span {
+    font-size: 1.02rem;
+    color: #d9f0ff;
 }
 
 .celebration-layer {
@@ -217,33 +340,61 @@ h1 {
 
 .drop {
     position: absolute;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
+    width: 24px;
+    height: 30px;
+    --drop-filter: invert(63%) sepia(82%) saturate(1942%) hue-rotate(173deg) brightness(97%) contrast(92%);
     pointer-events: none;
     transition: transform 0.12s ease, opacity 0.2s ease;
-    box-shadow: inset -3px -4px 7px rgba(255, 255, 255, 0.35);
+    animation: dropSway 1.7s ease-in-out infinite;
+}
+
+.drop-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    filter: var(--drop-filter) drop-shadow(0 3px 4px rgba(8, 62, 109, 0.28));
 }
 
 .drop.clean {
-    background: var(--clean);
+    --drop-filter: invert(63%) sepia(82%) saturate(1942%) hue-rotate(173deg) brightness(97%) contrast(92%);
 }
 
 .drop.super {
-    background: radial-gradient(circle at 30% 30%, #fff8b0 0%, #ffd84d 55%, #f4ad00 100%);
-    box-shadow:
-        inset -3px -4px 7px rgba(255, 255, 255, 0.45),
-        0 0 10px rgba(255, 195, 0, 0.75);
-    animation: superDropGlow 0.85s ease-in-out infinite;
+    --drop-filter: invert(85%) sepia(68%) saturate(1226%) hue-rotate(338deg) brightness(104%) contrast(99%);
+    animation: superDropGlow 0.85s ease-in-out infinite, dropSway 1.5s ease-in-out infinite;
 }
 
 .drop.bad {
-    background: var(--contaminated);
+    --drop-filter: invert(37%) sepia(35%) saturate(858%) hue-rotate(331deg) brightness(95%) contrast(89%);
 }
 
 .drop.popped {
     opacity: 0;
-    transform: scale(0.65);
+    animation: dropSplash 0.22s ease-out forwards;
+}
+
+@keyframes dropSway {
+    0% {
+        margin-left: 0;
+    }
+    50% {
+        margin-left: 1.5px;
+    }
+    100% {
+        margin-left: 0;
+    }
+}
+
+@keyframes dropSplash {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.35);
+    }
 }
 
 .help-text {
@@ -332,9 +483,57 @@ h1 {
     display: flex;
 }
 
+.milestone-message {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: rgba(7, 59, 95, 0.86);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.94rem;
+    letter-spacing: 0.02em;
+    border-radius: 999px;
+    padding: 8px 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    z-index: 3;
+    text-align: center;
+    max-width: calc(100% - 24px);
+}
+
+.milestone-message.active {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.site-footer {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.86);
+    border: 1px solid #8fc4e8;
+}
+
+.site-footer a {
+    color: var(--water-deep);
+    font-weight: 700;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+}
+
+.site-footer a:hover {
+    color: #0f4f86;
+}
+
 @media (max-width: 640px) {
     .hud {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
     }
 
     .game-area {
@@ -357,5 +556,28 @@ h1 {
         width: 100%;
         margin-left: 0;
         margin-right: 0;
+    }
+
+    .difficulty-buttons {
+        flex-direction: column;
+    }
+
+    .difficulty-button {
+        width: 100%;
+    }
+
+    .in-game-hud {
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .in-game-hud-item {
+        flex: 1;
+        justify-content: center;
+        font-size: 0.78rem;
+    }
+
+    .in-game-hud-item span {
+        font-size: 0.88rem;
     }
 }
