@@ -14,7 +14,7 @@
         <main class="game-shell">
             <img class="company-logo" src="img/cw_logo.png" alt="charity: water logo">
             <h1>Water Hero</h1>
-            <p class="subtitle">Move the water can to catch clean drops and avoid contaminated drops.</p>
+            <p class="subtitle">Tap or click falling drops to collect clean water before time runs out.</p>
 
             <section id="startScreen" class="screen start-screen active">
                 <div class="difficulty-panel" aria-label="Select game difficulty">
@@ -30,19 +30,18 @@
                 <button id="startButton" class="action-button">Start Game</button>
                 <button id="howToPlayButton" class="action-button secondary-button" type="button">How To Play</button>
                 <div id="howToPlayPanel" class="howto-panel">
-                    <p>1. Use Arrow Left and Arrow Right to move the water can.</p>
-                    <p>2. Catch blue drops to gain +10 score and fill water.</p>
-                    <p>3. Avoid brown drops. Catching one costs 1 life and -10 score.</p>
-                    <p>4. Gold super drops are rare power-ups: they give +1 life.</p>
-                    <p>5. Reach the target score before time runs out to win.</p>
+                    <p>1. Click or tap drops before they hit the ground.</p>
+                    <p>2. Blue drops add +10 score.</p>
+                    <p>3. Brown drops are harmful and reduce score.</p>
+                    <p>4. Super drops are blue with a gold glow and add a life.</p>
+                    <p>5. Reach the score goal shown in the game HUD for your difficulty.</p>
                 </div>
-                <p class="help-text">You start with 3 lives. Blue gives +10, gold gives +1 life, brown is harmful.</p>
+                <p class="help-text">Click fast and reach the required score for your selected difficulty.</p>
             </section>
 
             <section id="gameScreen" class="screen">
                 <div class="hud">
                     <div class="hud-item">Difficulty: <span id="difficultyValue">Normal</span></div>
-                    <div class="hud-item">Target: <span id="targetValue">0</span></div>
                     <div class="hud-item">Fill: <span id="fillValue">0</span>%</div>
                 </div>
 
@@ -71,11 +70,12 @@
                     <img id="waterCan" class="water-can" src="img/water-can-transparent.png" alt="Water can">
                 </div>
 
-                <p class="help-text">Use Left/Right arrow keys to move the can. Blue: +10, Gold: +1 life, Brown: -10 and -1 life.</p>
+                <p class="help-text">Tap or click drops. Blue: +10, Super: +10 and +1 life, Brown: -10 and harmful.</p>
             </section>
 
             <section id="endScreen" class="screen end-screen">
                 <h2 id="endTitle">Game Over</h2>
+                <p id="endMessage" class="end-message"></p>
                 <p>Final Score: <strong id="finalScore">0</strong></p>
                 <button id="playAgainButton" class="action-button">Play Again</button>
                 <button id="endMenuButton" class="action-button secondary-button" type="button">Return To Main Menu</button>

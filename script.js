@@ -3,41 +3,53 @@ const difficultySettings = {
   easy: {
     label: "Easy",
     timeLimit: 75,
-    targetScore: 180,
+    targetScore: 130,
     spawnIntervalMs: 980,
     dropSpeedBase: 85,
     speedIncreasePerSecond: 1.6,
     superDropChance: 0.05,
     cleanDropChance: 0.78,
-    description: "Longer timer, lower target score, and slower drops."
+    description: "Goal: 130 points in 75s. Slower and less frequent drops."
   },
   normal: {
     label: "Normal",
     timeLimit: 60,
-    targetScore: 240,
+    targetScore: 260,
     spawnIntervalMs: 840,
     dropSpeedBase: 105,
     speedIncreasePerSecond: 2.2,
     superDropChance: 0.035,
     cleanDropChance: 0.73,
-    description: "Balanced timer and score target for standard play."
+    description: "Goal: 260 points in 60s. Balanced drop speed and spawn frequency."
   },
   hard: {
     label: "Hard",
     timeLimit: 45,
-    targetScore: 320,
+    targetScore: 380,
     spawnIntervalMs: 690,
     dropSpeedBase: 130,
     speedIncreasePerSecond: 2.9,
     superDropChance: 0.02,
     cleanDropChance: 0.68,
-    description: "Short timer, higher target score, and faster spawns."
+    description: "Goal: 380 points in 45s. Faster drops and quicker spawns."
   }
 };
 
 const milestones = [
   { score: 10, message: "Halfway there!" },
   { score: 20, message: "Nice work!" }
+];
+
+const winningMessages = [
+  "You did it! Clean water champion!",
+  "Amazing work! You reached the water goal!",
+  "Victory! Your drops made a real difference!"
+];
+
+const losingMessages = [
+  "Try again! Every drop counts.",
+  "Keep going! You are close.",
+  "Nice effort! Give it another shot."
 ];
 
 const gameState = {
@@ -69,10 +81,10 @@ const livesValue = document.getElementById("livesValue");
 const fillValue = document.getElementById("fillValue");
 const fillBar = document.getElementById("fillBar");
 const difficultyValue = document.getElementById("difficultyValue");
-const targetValue = document.getElementById("targetValue");
 const timeValue = document.getElementById("timeValue");
 const objectivesList = document.getElementById("objectivesList");
 const endTitle = document.getElementById("endTitle");
+const endMessage = document.getElementById("endMessage");
 const finalScore = document.getElementById("finalScore");
 const celebrationLayer = document.getElementById("celebrationLayer");
 
@@ -151,7 +163,6 @@ function updateHud() {
   fillValue.textContent = Math.floor(gameState.fill);
   fillBar.style.width = gameState.fill + "%";
   difficultyValue.textContent = gameState.activeDifficulty.label;
-  targetValue.textContent = gameState.activeDifficulty.targetScore;
   timeValue.textContent = Math.max(0, gameState.timeRemaining);
 }
 
@@ -452,15 +463,16 @@ function setDifficulty(mode) {
 function updateScore(points) {
   gameState.score = Math.max(0, gameState.score + points);
 
-  const target = gameState.activeDifficulty.targetScore;
-  gameState.fill = Math.min(100, (gameState.score / target) * 100);
+  const targetScore = gameState.activeDifficulty.targetScore;
+  gameState.fill = Math.min(100, (gameState.score / targetScore) * 100);
 
   updateHud();
   checkMilestones();
 
-  if (gameState.score >= target) {
+  if (gameState.score >= targetScore) {
     endGame(true);
   }
+
 }
 
 function clearActiveDrops() {
@@ -534,6 +546,28 @@ function startTimer() {
   }, 1000);
 }
 
+function handleDropClick(drop) {
+  if (!gameState.running || gameState.paused) {
+    return;
+  }
+
+  if (drop.type === "bad") {
+    gameState.lives = Math.max(0, gameState.lives - 1);
+    updateScore(-10);
+    playSound("miss");
+  } else {
+    if (drop.type === "super") {
+      gameState.lives += 1;
+    }
+    updateScore(10);
+    playSound("collect");
+  }
+
+  updateObjectiveProgress(drop.type);
+  updateHud();
+  removeDrop(drop, true);
+}
+
 function createDrop() {
   const dropElement = document.createElement("div");
   const dropImage = document.createElement("img");
@@ -551,6 +585,10 @@ function createDrop() {
   dropImage.src = "img/water-drop.png";
   dropImage.alt = "";
   dropElement.appendChild(dropImage);
+
+  dropElement.addEventListener("click", () => {
+    handleDropClick(dropData);
+  });
 
   const gameAreaWidth = gameArea.clientWidth;
   const dropSize = 24;
@@ -582,32 +620,6 @@ function removeDrop(drop, withFade) {
 
   drops.splice(dropIndex, 1);
   removeElement(drop.element, withFade);
-}
-
-function handleCatch(drop) {
-  const isPositiveDrop = drop.type === "clean" || drop.type === "super";
-  triggerCanReaction(isPositiveDrop);
-
-  if (drop.type === "super") {
-    gameState.lives += 1;
-    updateScore(10);
-    playSound("collect");
-  } else if (drop.type === "clean") {
-    updateScore(10);
-    playSound("collect");
-  } else {
-    gameState.lives -= 1;
-    updateScore(-10);
-    playSound("miss");
-  }
-
-  updateObjectiveProgress(drop.type);
-  updateHud();
-  removeDrop(drop, true);
-
-  if (gameState.lives <= 0) {
-    endGame(false);
-  }
 }
 
 function gameLoop(currentTime) {
@@ -659,12 +671,8 @@ function gameLoop(currentTime) {
       dropTop < canBottom;
 
     if (intersectsCan) {
-      handleCatch(drop);
-
-      if (!gameState.running) {
-        break;
-      }
-
+      triggerCanReaction(drop.type !== "bad");
+      handleDropClick(drop);
       continue;
     }
 
@@ -697,12 +705,15 @@ function endGame(didWin) {
 
   clearActiveDrops();
 
+  const messagePool = didWin ? winningMessages : losingMessages;
+  const randomMessage = messagePool[Math.floor(Math.random() * messagePool.length)];
+  endMessage.textContent = randomMessage;
+
   if (didWin) {
-    showMilestoneMessage("You did it!", 1700);
     playSound("win");
   }
 
-  endTitle.textContent = didWin ? "You Win!" : "Game Over";
+  endTitle.textContent = didWin ? "You Win!" : "Try Again";
   finalScore.textContent = gameState.score;
   showScreen(endScreen);
 

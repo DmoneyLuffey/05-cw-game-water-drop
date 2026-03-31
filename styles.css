@@ -74,6 +74,13 @@ h1 {
     padding: 20px 8px 8px;
 }
 
+.end-message {
+    margin: 0 0 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f4f86;
+}
+
 .difficulty-panel {
     max-width: 580px;
     margin: 0 auto 16px;
@@ -168,7 +175,7 @@ h1 {
 
 .hud {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
     margin-bottom: 12px;
     font-weight: 700;
@@ -343,7 +350,8 @@ h1 {
     width: 24px;
     height: 30px;
     --drop-filter: invert(63%) sepia(82%) saturate(1942%) hue-rotate(173deg) brightness(97%) contrast(92%);
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: pointer;
     transition: transform 0.12s ease, opacity 0.2s ease;
     animation: dropSway 1.7s ease-in-out infinite;
 }
@@ -361,8 +369,18 @@ h1 {
 }
 
 .drop.super {
-    --drop-filter: invert(85%) sepia(68%) saturate(1226%) hue-rotate(338deg) brightness(104%) contrast(99%);
+    --drop-filter: invert(63%) sepia(82%) saturate(1942%) hue-rotate(173deg) brightness(99%) contrast(94%);
+    outline: 2px solid rgba(255, 234, 122, 0.95);
+    outline-offset: 1px;
+    border-radius: 999px;
     animation: superDropGlow 0.85s ease-in-out infinite, dropSway 1.5s ease-in-out infinite;
+}
+
+.drop.super .drop-image {
+    filter:
+        var(--drop-filter)
+        drop-shadow(0 0 10px rgba(255, 222, 74, 0.95))
+        drop-shadow(0 0 2px rgba(255, 255, 220, 0.95));
 }
 
 .drop.bad {
